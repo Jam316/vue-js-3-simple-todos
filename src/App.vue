@@ -1,7 +1,7 @@
 <script>
-import { ref, computed, watchEffect } from 'vue';
-import TodoItem from './components/TodoItem.vue';
-import CreateTodo from './components/CreateTodo.vue';
+import { ref, computed, watchEffect } from 'vue'
+import TodoItem from './components/TodoItem.vue'
+import CreateTodo from './components/CreateTodo.vue'
 
 export default {
   components: {
@@ -9,7 +9,7 @@ export default {
     CreateTodo
   },
   setup() {
-    let updatedTodos;
+    let updatedTodos
 
     const todos = ref([])
     const todoEditing = ref(null)
@@ -19,19 +19,14 @@ export default {
         todos.value.push(newTodo)
         saveData(todos.value)
       } else {
-        alert('Enter todo!');
+        alert('Enter todo!')
       }
     }
 
     const toggleComplete = (todoId) => {
-      updatedTodos = todos.value.map(todo => {
-        if (todo.id === todoId) {
-          todo.completed = !todo.completed
-        }
-
-        return todo
-      })
-
+      const updatedTodos = todos.value.map(todo =>
+        todo.id === todoId ? { ...todo, completed: !todo.completed } : todo
+      )
       todos.value = updatedTodos
       saveData(todos.value)
     }
@@ -45,14 +40,9 @@ export default {
     const enableEdit = (todoId) => todoEditing.value = todoId
 
     const updateTodo = (todoId, editingText) => {
-      updatedTodos = todos.value.map(todo => {
-        if (todo.id === todoId) {
-          todo.text = editingText
-        }
-
-        return todo
-      })
-
+      const updatedTodos = todos.value.map(todo =>
+        todo.id === todoId ? { ...todo, text: editingText } : todo
+      )
       alert(`${editingText} updated!`)
       todos.value = updatedTodos
       todoEditing.value = null
@@ -61,16 +51,15 @@ export default {
 
     const noItems = computed(() => todos.value.length ? `${todos.value.length} Item(s)` : 'No todos')
 
-    const saveData = (todos) => {
-      const json = JSON.stringify(todos)
-      localStorage.setItem("todos", json)
+    const saveData = todos => {
+      localStorage.setItem("todos", JSON.stringify(todos))
     }
 
     watchEffect(() => {
-      const json = localStorage.getItem("todos");
-      const loadedTodos = JSON.parse(json);
+      const json = localStorage.getItem("todos")
+      const loadedTodos = JSON.parse(json)
       if (loadedTodos) {
-        todos.value = loadedTodos;
+        todos.value = loadedTodos
       }
     })
 
